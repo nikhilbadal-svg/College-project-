@@ -1,0 +1,943 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Aravali College of Engg. & Management - ERP Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700&family=Roboto:wght@300;400;500&display=swap" rel="stylesheet">
+<style>
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+  body { font-family: 'Poppins', sans-serif; background: #f0f2f5; display: flex; flex-direction: column; min-height: 100vh; }
+
+  /* TOP BAR */
+  .topbar {
+    background: linear-gradient(135deg, #3b1fa3 0%, #6c3fc7 100%);
+    color: white;
+    padding: 10px 20px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    position: sticky; top: 0; z-index: 100;
+    box-shadow: 0 3px 12px rgba(0,0,0,0.3);
+  }
+  .topbar .logo-area { display: flex; align-items: center; gap: 12px; }
+  .topbar .logo-area img { width: 50px; height: 50px; border-radius: 50%; border: 2px solid white; }
+  .topbar .college-name { font-size: 15px; font-weight: 700; line-height: 1.3; }
+  .topbar .college-name span { font-size: 11px; font-weight: 400; display: block; opacity: 0.85; }
+  .topbar .top-right { display: flex; align-items: center; gap: 14px; font-size: 13px; }
+  .topbar .top-right .notif { background: rgba(255,255,255,0.2); border-radius: 20px; padding: 4px 12px; cursor: pointer; }
+  .topbar .logout-btn { background: #ff4757; color: white; border: none; padding: 6px 16px; border-radius: 20px; cursor: pointer; font-size: 12px; font-weight: 600; }
+
+  /* LAYOUT */
+  .main-layout { display: flex; flex: 1; }
+
+  /* SIDEBAR */
+  .sidebar {
+    width: 200px;
+    background: linear-gradient(180deg, #2d1a8e 0%, #4a2db5 60%, #6c3fc7 100%);
+    color: white;
+    min-height: calc(100vh - 70px);
+    position: sticky; top: 70px;
+    display: flex; flex-direction: column;
+  }
+  .sidebar .student-mini { padding: 14px 12px; background: rgba(255,255,255,0.1); text-align: center; border-bottom: 1px solid rgba(255,255,255,0.15); }
+  .sidebar .student-mini .avatar { width: 52px; height: 52px; border-radius: 50%; background: #00d2ff; margin: 0 auto 6px; display: flex; align-items: center; justify-content: center; font-size: 20px; font-weight: 700; color: #1a1a2e; border: 2px solid white; }
+  .sidebar .student-mini .s-name { font-size: 12px; font-weight: 600; }
+  .sidebar .student-mini .s-class { font-size: 10px; opacity: 0.7; }
+
+  .nav-section { padding: 8px 0; }
+  .nav-section .nav-title { font-size: 9px; font-weight: 700; letter-spacing: 1.5px; color: rgba(255,255,255,0.5); padding: 6px 14px 2px; text-transform: uppercase; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px;
+    padding: 9px 14px; cursor: pointer;
+    font-size: 12px; font-weight: 500;
+    color: rgba(255,255,255,0.85);
+    transition: all 0.2s;
+    border-left: 3px solid transparent;
+  }
+  .nav-item:hover, .nav-item.active { background: rgba(255,255,255,0.15); border-left-color: #00d2ff; color: white; }
+  .nav-item .nav-icon { font-size: 15px; width: 20px; text-align: center; }
+
+  /* CONTENT */
+  .content { flex: 1; padding: 20px; overflow-x: hidden; }
+
+  /* STUDENT SELECTOR */
+  .student-selector { background: white; border-radius: 12px; padding: 14px 18px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.08); display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+  .student-selector label { font-size: 13px; font-weight: 600; color: #4a2db5; }
+  .student-selector select { padding: 7px 14px; border: 2px solid #6c3fc7; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; color: #333; cursor: pointer; outline: none; }
+  .student-selector .switch-btn { background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border: none; padding: 7px 18px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
+
+  /* STUDENT INFO CARD */
+  .info-card { background: linear-gradient(135deg, #3b1fa3 0%, #6c3fc7 100%); border-radius: 14px; padding: 20px; margin-bottom: 18px; color: white; box-shadow: 0 6px 20px rgba(59,31,163,0.35); display: flex; gap: 20px; flex-wrap: wrap; align-items: flex-start; }
+  .info-card .info-grid { flex: 1; min-width: 250px; }
+  .info-grid table { width: 100%; border-collapse: collapse; }
+  .info-grid table tr td { padding: 5px 8px; font-size: 12.5px; }
+  .info-grid table tr td:first-child { color: rgba(255,255,255,0.7); font-weight: 500; width: 130px; }
+  .info-grid table tr td:last-child { font-weight: 600; color: white; }
+  .info-card .avatar-big { width: 90px; height: 90px; border-radius: 50%; background: rgba(255,255,255,0.15); border: 3px solid rgba(255,255,255,0.5); display: flex; align-items: center; justify-content: center; font-size: 36px; font-weight: 700; flex-shrink: 0; }
+  .att-summary { background: rgba(255,255,255,0.15); border-radius: 10px; padding: 10px 16px; margin-top: 10px; font-size: 13px; }
+  .att-summary .att-nums { font-size: 15px; font-weight: 700; }
+  .att-pct { font-size: 22px; font-weight: 800; color: #00ffcc; }
+
+  /* SECTION PANELS */
+  .section-panel { background: white; border-radius: 12px; margin-bottom: 18px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); overflow: hidden; display: none; }
+  .section-panel.active-section { display: block; }
+  .panel-header { background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; padding: 13px 18px; display: flex; align-items: center; gap: 10px; font-size: 14px; font-weight: 700; }
+  .panel-header .ph-icon { font-size: 18px; }
+  .panel-body { padding: 18px; }
+
+  /* ATTENDANCE TABLE */
+  .att-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .att-table th { background: #3b1fa3; color: white; padding: 9px 12px; text-align: left; font-weight: 600; }
+  .att-table td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; }
+  .att-table tr:hover td { background: #f8f5ff; }
+  .badge { padding: 3px 10px; border-radius: 20px; font-size: 11px; font-weight: 700; color: white; display: inline-block; }
+  .badge-green { background: #2ed573; color: #1a1a1a; }
+  .badge-orange { background: #ffa502; color: #1a1a1a; }
+  .badge-red { background: #ff4757; }
+  .badge-blue { background: #3b1fa3; }
+  .pct-bar { height: 6px; background: #e8e8e8; border-radius: 3px; margin-top: 3px; }
+  .pct-fill { height: 6px; border-radius: 3px; }
+
+  /* CALENDAR */
+  .calendar-wrap { margin-top: 10px; }
+  .cal-header { display: flex; justify-content: space-between; align-items: center; background: #00d2ff; color: #1a1a2e; padding: 10px 16px; border-radius: 8px 8px 0 0; font-weight: 700; font-size: 14px; }
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); border: 1px solid #e0e0e0; border-top: none; border-radius: 0 0 8px 8px; overflow: hidden; }
+  .cal-day-name { background: #3b1fa3; color: white; text-align: center; padding: 7px; font-size: 11px; font-weight: 700; }
+  .cal-cell { text-align: center; padding: 10px 4px; font-size: 12px; border-right: 1px solid #f0f0f0; border-bottom: 1px solid #f0f0f0; cursor: pointer; }
+  .cal-cell:hover { background: #f0f0ff; }
+  .cal-cell.present { background: #d4edda; color: #155724; font-weight: 600; }
+  .cal-cell.absent { background: #f8d7da; color: #721c24; font-weight: 600; }
+  .cal-cell.holiday { background: #fff3cd; color: #856404; }
+  .cal-cell.empty { background: #fafafa; color: #ccc; }
+  .cal-cell.today { border: 2px solid #3b1fa3; border-radius: 4px; font-weight: 700; }
+
+  /* FEES */
+  .fees-summary { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+  .fee-box { flex: 1; min-width: 140px; background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border-radius: 10px; padding: 14px; text-align: center; }
+  .fee-box .fb-label { font-size: 11px; opacity: 0.8; }
+  .fee-box .fb-val { font-size: 22px; font-weight: 800; margin-top: 4px; }
+  .fee-table { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .fee-table th { background: #f0f0ff; color: #3b1fa3; padding: 9px 12px; text-align: left; font-weight: 700; border-bottom: 2px solid #3b1fa3; }
+  .fee-table td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; }
+  .status-paid { color: #2ed573; font-weight: 700; }
+  .status-pending { color: #ffa502; font-weight: 700; }
+  .pay-btn { background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border: none; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+
+  /* ASSIGNMENT */
+  .assignment-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+  .assignment-card .ac-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+  .assignment-card .ac-title { font-weight: 700; font-size: 14px; color: #2d1a8e; }
+  .assignment-card .ac-sub { font-size: 12px; color: #888; margin-bottom: 6px; }
+  .assignment-card .ac-desc { font-size: 12.5px; color: #555; margin-bottom: 10px; }
+  .ac-meta { display: flex; gap: 12px; flex-wrap: wrap; font-size: 11.5px; color: #777; }
+  .upload-btn { background: #f0f0ff; color: #3b1fa3; border: 2px dashed #6c3fc7; padding: 6px 14px; border-radius: 6px; cursor: pointer; font-size: 12px; font-weight: 600; }
+
+  /* EVENTS */
+  .event-card { display: flex; gap: 14px; border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px; margin-bottom: 12px; align-items: flex-start; }
+  .event-date-box { min-width: 56px; background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border-radius: 8px; text-align: center; padding: 8px 4px; }
+  .event-date-box .ed-day { font-size: 22px; font-weight: 800; line-height: 1; }
+  .event-date-box .ed-mon { font-size: 11px; font-weight: 500; opacity: 0.85; }
+  .event-info .ev-title { font-weight: 700; font-size: 14px; color: #2d1a8e; margin-bottom: 4px; }
+  .event-info .ev-desc { font-size: 12.5px; color: #555; }
+  .event-info .ev-time { font-size: 11.5px; color: #888; margin-top: 4px; }
+
+  /* GALLERY */
+  .gallery-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(140px, 1fr)); gap: 12px; }
+  .gallery-item { border-radius: 10px; overflow: hidden; aspect-ratio: 1; background: linear-gradient(135deg, var(--c1), var(--c2)); display: flex; align-items: center; justify-content: center; font-size: 36px; cursor: pointer; transition: transform 0.2s; }
+  .gallery-item:hover { transform: scale(1.04); }
+  .gallery-item .gi-label { font-size: 11px; font-weight: 700; color: white; text-align: center; padding: 4px 6px; }
+
+  /* TEACHER */
+  .teacher-card { display: flex; gap: 14px; align-items: center; border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px; margin-bottom: 12px; }
+  .teacher-card .tc-avatar { width: 54px; height: 54px; border-radius: 50%; background: linear-gradient(135deg, #3b1fa3, #00d2ff); display: flex; align-items: center; justify-content: center; font-size: 20px; color: white; font-weight: 700; flex-shrink: 0; }
+  .teacher-card .tc-info .tc-name { font-weight: 700; font-size: 14px; color: #2d1a8e; }
+  .teacher-card .tc-info .tc-sub { font-size: 12px; color: #555; }
+  .teacher-card .tc-info .tc-contact { font-size: 11.5px; color: #888; margin-top: 4px; }
+  .teacher-card .msg-btn { margin-left: auto; background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border: none; padding: 7px 14px; border-radius: 8px; cursor: pointer; font-size: 12px; font-weight: 600; }
+
+  /* LIVE CLASS */
+  .live-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 16px; margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 10px; }
+  .live-card .lc-info .lc-sub { font-weight: 700; font-size: 14px; color: #2d1a8e; }
+  .live-card .lc-info .lc-time { font-size: 12px; color: #888; margin-top: 3px; }
+  .live-badge { background: #ff4757; color: white; font-size: 10px; font-weight: 700; padding: 2px 8px; border-radius: 20px; animation: pulse 1.5s infinite; display: inline-block; margin-left: 8px; }
+  @keyframes pulse { 0%,100%{opacity:1} 50%{opacity:0.5} }
+  .join-btn { background: #2ed573; color: #1a1a2e; border: none; padding: 8px 18px; border-radius: 8px; cursor: pointer; font-size: 13px; font-weight: 700; }
+
+  /* FEEDBACK */
+  .feedback-form .ff-group { margin-bottom: 14px; }
+  .feedback-form label { font-size: 13px; font-weight: 600; color: #2d1a8e; display: block; margin-bottom: 4px; }
+  .feedback-form select, .feedback-form textarea, .feedback-form input { width: 100%; padding: 9px 12px; border: 1.5px solid #d0d0d0; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; outline: none; }
+  .feedback-form select:focus, .feedback-form textarea:focus { border-color: #6c3fc7; }
+  .feedback-form .star-row { display: flex; gap: 6px; font-size: 24px; cursor: pointer; color: #ffa502; }
+  .feedback-form .submit-btn { background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 700; width: 100%; }
+
+  /* LIBRARY */
+  .library-card { border: 1px solid #e0e0e0; border-radius: 10px; padding: 14px; margin-bottom: 12px; display: flex; gap: 14px; align-items: center; }
+  .library-card .book-icon { font-size: 32px; }
+  .library-card .lib-info .lib-title { font-weight: 700; font-size: 13.5px; color: #2d1a8e; }
+  .library-card .lib-info .lib-author { font-size: 12px; color: #888; }
+  .library-card .lib-due { margin-left: auto; text-align: right; font-size: 11.5px; }
+  .lib-due .due-date { font-weight: 600; color: #ff4757; }
+  .return-btn { background: #f0f0ff; color: #3b1fa3; border: 1.5px solid #6c3fc7; padding: 5px 12px; border-radius: 6px; cursor: pointer; font-size: 11.5px; font-weight: 600; margin-top: 4px; }
+
+  /* UPLOAD DOC */
+  .upload-area { border: 2.5px dashed #6c3fc7; border-radius: 12px; padding: 40px; text-align: center; color: #6c3fc7; cursor: pointer; margin-bottom: 18px; }
+  .upload-area .upload-icon { font-size: 40px; margin-bottom: 10px; }
+  .upload-area p { font-size: 14px; font-weight: 500; }
+  .docs-list { width: 100%; border-collapse: collapse; font-size: 13px; }
+  .docs-list th { background: #f0f0ff; color: #3b1fa3; padding: 9px 12px; text-align: left; font-weight: 700; }
+  .docs-list td { padding: 9px 12px; border-bottom: 1px solid #f0f0f0; }
+
+  /* PARENT REQUEST */
+  .pr-form .ff-group { margin-bottom: 14px; }
+  .pr-form label { font-size: 13px; font-weight: 600; color: #2d1a8e; display: block; margin-bottom: 4px; }
+  .pr-form input, .pr-form select, .pr-form textarea { width: 100%; padding: 9px 12px; border: 1.5px solid #d0d0d0; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; outline: none; }
+  .pr-form .submit-btn { background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 700; width: 100%; margin-top: 8px; }
+  .request-history { margin-top: 18px; }
+  .rh-item { border: 1px solid #e0e0e0; border-radius: 8px; padding: 12px; margin-bottom: 10px; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 6px; }
+  .rh-item .rh-type { font-weight: 700; font-size: 13px; color: #2d1a8e; }
+  .rh-item .rh-date { font-size: 11.5px; color: #888; }
+
+  /* DASHBOARD STATS */
+  .dash-stats { display: flex; gap: 14px; flex-wrap: wrap; margin-bottom: 18px; }
+  .stat-box { flex: 1; min-width: 130px; background: white; border-radius: 12px; padding: 16px; box-shadow: 0 2px 10px rgba(0,0,0,0.07); text-align: center; border-top: 4px solid; }
+  .stat-box .sb-icon { font-size: 28px; margin-bottom: 6px; }
+  .stat-box .sb-val { font-size: 26px; font-weight: 800; }
+  .stat-box .sb-label { font-size: 11px; color: #888; font-weight: 500; }
+
+  /* TIMETABLE */
+  .tt-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  .tt-table th { background: #3b1fa3; color: white; padding: 9px 10px; text-align: center; font-weight: 600; font-size: 12px; }
+  .tt-table td { padding: 8px 10px; border: 1px solid #e0e0e0; text-align: center; vertical-align: middle; }
+  .tt-cell { background: linear-gradient(135deg, #f0f0ff, #e8e0ff); border-radius: 6px; padding: 5px 7px; font-size: 11px; font-weight: 600; color: #3b1fa3; }
+  .tt-break { background: #fff3cd; border-radius: 6px; padding: 5px 7px; font-size: 11px; font-weight: 600; color: #856404; }
+  .tt-free { color: #ccc; }
+
+  /* RESULT */
+  .result-card { border: 1px solid #e0e0e0; border-radius: 10px; overflow: hidden; margin-bottom: 18px; }
+  .result-header { background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; padding: 12px 16px; display: flex; justify-content: space-between; align-items: center; }
+  .grade-circle { width: 60px; height: 60px; border-radius: 50%; background: rgba(255,255,255,0.2); display: flex; align-items: center; justify-content: center; font-size: 22px; font-weight: 800; border: 2px solid white; }
+  .result-body { padding: 14px; }
+  .result-table { width: 100%; border-collapse: collapse; font-size: 12.5px; }
+  .result-table th { background: #f0f0ff; color: #3b1fa3; padding: 8px 12px; text-align: left; font-weight: 700; }
+  .result-table td { padding: 8px 12px; border-bottom: 1px solid #f0f0f0; }
+
+  /* NOTICE */
+  .notice-item { border-left: 4px solid #6c3fc7; padding: 10px 14px; margin-bottom: 12px; background: #f8f5ff; border-radius: 0 8px 8px 0; }
+  .notice-item .ni-title { font-weight: 700; font-size: 13.5px; color: #2d1a8e; margin-bottom: 4px; }
+  .notice-item .ni-body { font-size: 12.5px; color: #555; }
+  .notice-item .ni-date { font-size: 11px; color: #999; margin-top: 5px; }
+
+  /* CHANGE PASSWORD */
+  .pwd-form .ff-group { margin-bottom: 14px; }
+  .pwd-form label { font-size: 13px; font-weight: 600; color: #2d1a8e; display: block; margin-bottom: 4px; }
+  .pwd-form input { width: 100%; padding: 9px 12px; border: 1.5px solid #d0d0d0; border-radius: 8px; font-family: 'Poppins', sans-serif; font-size: 13px; outline: none; }
+  .pwd-form .submit-btn { background: linear-gradient(135deg, #3b1fa3, #6c3fc7); color: white; border: none; padding: 10px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; font-weight: 700; margin-top: 8px; }
+
+  /* TOAST */
+  .toast { position: fixed; bottom: 30px; right: 30px; background: #2d1a8e; color: white; padding: 12px 22px; border-radius: 10px; font-size: 13px; font-weight: 600; box-shadow: 0 4px 20px rgba(0,0,0,0.3); opacity: 0; transition: opacity 0.4s; z-index: 9999; }
+  .toast.show { opacity: 1; }
+
+  /* RESPONSIVE */
+  @media(max-width: 700px) {
+    .sidebar { display: none; }
+    .main-layout { flex-direction: column; }
+  }
+</style>
+</head>
+<body>
+
+<!-- TOP BAR -->
+<div class="topbar">
+  <div class="logo-area">
+    <div style="width:46px;height:46px;border-radius:50%;background:white;display:flex;align-items:center;justify-content:center;font-size:22px;border:2px solid rgba(255,255,255,0.5);">🎓</div>
+    <div class="college-name">
+      Aravali College of Engg. & Management
+      <span>My Interactive Zone | Academic Year 2025-2026</span>
+    </div>
+  </div>
+  <div class="top-right">
+    <div class="notif" onclick="showToast('🔔 2 New Notifications!')">🔔 Notifications</div>
+    <button class="logout-btn" onclick="showToast('Logged out successfully!')">Logout</button>
+  </div>
+</div>
+
+<div class="main-layout">
+<!-- SIDEBAR -->
+<div class="sidebar">
+  <div class="student-mini">
+    <div class="avatar" id="sidebarAvatar">N</div>
+    <div class="s-name" id="sidebarName">Nikhil Badal</div>
+    <div class="s-class">BCA (DIGSY B)</div>
+  </div>
+  <div class="nav-section">
+    <div class="nav-title">My Zone</div>
+    <div class="nav-item active" onclick="showSection('dashboard')"><span class="nav-icon">🏠</span> Dashboard</div>
+    <div class="nav-item" onclick="showSection('attendance')"><span class="nav-icon">📋</span> Attendance</div>
+    <div class="nav-item" onclick="showSection('paidfees')"><span class="nav-icon">💳</span> Paid Fees</div>
+    <div class="nav-item" onclick="showSection('payfee')"><span class="nav-icon">💰</span> Pay Fee</div>
+    <div class="nav-item" onclick="showSection('assignment')"><span class="nav-icon">📝</span> Assignment</div>
+    <div class="nav-item" onclick="showSection('event')"><span class="nav-icon">🎉</span> Event</div>
+    <div class="nav-item" onclick="showSection('timetable')"><span class="nav-icon">🕐</span> Timetable</div>
+    <div class="nav-item" onclick="showSection('result')"><span class="nav-icon">📊</span> Result</div>
+    <div class="nav-item" onclick="showSection('noticeboard')"><span class="nav-icon">📌</span> Notice Board</div>
+    <div class="nav-item" onclick="showSection('gallery')"><span class="nav-icon">🖼️</span> Gallery</div>
+    <div class="nav-item" onclick="showSection('myteacher')"><span class="nav-icon">👨‍🏫</span> My Teacher</div>
+    <div class="nav-item" onclick="showSection('liveclass')"><span class="nav-icon">📡</span> Live Class</div>
+    <div class="nav-item" onclick="showSection('feedback')"><span class="nav-icon">💬</span> Feedback Form</div>
+    <div class="nav-item" onclick="showSection('uploaddoc')"><span class="nav-icon">📤</span> Upload Document</div>
+    <div class="nav-item" onclick="showSection('parentrequest')"><span class="nav-icon">👨‍👩‍👦</span> Parent's Request</div>
+    <div class="nav-item" onclick="showSection('library')"><span class="nav-icon">📚</span> Library</div>
+    <div class="nav-item" onclick="showSection('changepassword')"><span class="nav-icon">🔒</span> Change Password</div>
+  </div>
+</div>
+
+<!-- MAIN CONTENT -->
+<div class="content">
+
+  <!-- STUDENT SELECTOR -->
+  <div class="student-selector">
+    <label>👤 Select Student:</label>
+    <select id="studentSelect" onchange="switchStudent()">
+      <option value="0">Nikhil Badal — BCA (DIGSY B)</option>
+      <option value="1">Mannat Sharma — BCA (DIGSY B)</option>
+      <option value="2">Nikhil Krishna — BCA (DIGSY B)</option>
+    </select>
+    <button class="switch-btn" onclick="switchStudent()">Switch Student</button>
+  </div>
+
+  <!-- STUDENT INFO CARD -->
+  <div class="info-card" id="infoCard">
+    <div class="info-grid">
+      <table>
+        <tr><td>🎓 Student Details:</td><td id="ic_name">240438 : NIKHIL BADAL, BCA (DIGSY B)</td></tr>
+        <tr><td>📅 Academic Year:</td><td>2025-2026</td></tr>
+        <tr><td>🎂 Date Of Birth:</td><td id="ic_dob">30/03/2005</td></tr>
+        <tr><td>📱 Mobile No.:</td><td id="ic_mobile">9891561480</td></tr>
+        <tr><td>👨‍👩‍👦 Parents:</td><td id="ic_parents">SIDDH NARAYAN BADAL, SAROJ BADAL</td></tr>
+        <tr><td>🎟️ Concession:</td><td>NA</td></tr>
+      </table>
+      <div class="att-summary" style="margin-top:12px;">
+        <div class="att-nums" id="ic_attNums">Present : 194 &nbsp;|&nbsp; Absent : 34 &nbsp;|&nbsp; Total Att : 228</div>
+        <div>Percentage : <span class="att-pct" id="ic_attPct">85.09%</span></div>
+      </div>
+    </div>
+    <div class="avatar-big" id="ic_avatar">N</div>
+  </div>
+
+  <!-- ============ DASHBOARD ============ -->
+  <div class="section-panel active-section" id="sec_dashboard">
+    <div class="panel-header"><span class="ph-icon">🏠</span> Dashboard — Quick Overview</div>
+    <div class="panel-body">
+      <div class="dash-stats">
+        <div class="stat-box" style="border-color:#6c3fc7;"><div class="sb-icon">📋</div><div class="sb-val" id="db_att">85%</div><div class="sb-label">Attendance</div></div>
+        <div class="stat-box" style="border-color:#2ed573;"><div class="sb-icon">💳</div><div class="sb-val">₹42,000</div><div class="sb-label">Fees Paid</div></div>
+        <div class="stat-box" style="border-color:#ffa502;"><div class="sb-icon">📝</div><div class="sb-val">3</div><div class="sb-label">Pending Assignments</div></div>
+        <div class="stat-box" style="border-color:#ff4757;"><div class="sb-icon">📊</div><div class="sb-val">B+</div><div class="sb-label">Last Semester Grade</div></div>
+        <div class="stat-box" style="border-color:#00d2ff;"><div class="sb-icon">📚</div><div class="sb-val">2</div><div class="sb-label">Books Issued</div></div>
+      </div>
+      <div class="notice-item">
+        <div class="ni-title">📢 Important Notice</div>
+        <div class="ni-body">End semester examinations are scheduled from 15 May 2026. Please check your hall ticket from the portal.</div>
+        <div class="ni-date">Posted: 25 April 2026</div>
+      </div>
+      <div class="notice-item" style="border-color:#ffa502;">
+        <div class="ni-title">🎉 Annual Sports Day</div>
+        <div class="ni-body">Annual Sports Day will be celebrated on 5 May 2026. All students are requested to participate.</div>
+        <div class="ni-date">Posted: 22 April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ATTENDANCE ============ -->
+  <div class="section-panel" id="sec_attendance">
+    <div class="panel-header"><span class="ph-icon">📋</span> Attendance — Even Semester</div>
+    <div class="panel-body">
+      <table class="att-table" id="attTable">
+        <thead>
+          <tr><th>Subject Name</th><th>Present</th><th>Absent</th><th>Total</th><th>Percentage</th></tr>
+        </thead>
+        <tbody id="attBody"></tbody>
+      </table>
+      <!-- Calendar -->
+      <div class="calendar-wrap" style="margin-top:22px;">
+        <div class="cal-header">
+          <span onclick="changeMonth(-1)" style="cursor:pointer;">◀</span>
+          <span>April 2026</span>
+          <span onclick="changeMonth(1)" style="cursor:pointer;">▶</span>
+        </div>
+        <div class="cal-grid">
+          <div class="cal-day-name">Sun</div><div class="cal-day-name">Mon</div><div class="cal-day-name">Tue</div>
+          <div class="cal-day-name">Wed</div><div class="cal-day-name">Thu</div><div class="cal-day-name">Fri</div><div class="cal-day-name">Sat</div>
+          <!-- April 2026 starts on Wednesday -->
+          <div class="cal-cell empty"></div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
+          <div class="cal-cell present">1</div><div class="cal-cell present">2</div><div class="cal-cell present">3</div><div class="cal-cell holiday">4</div>
+          <div class="cal-cell holiday">5</div><div class="cal-cell present">6</div><div class="cal-cell present">7</div><div class="cal-cell present">8</div><div class="cal-cell present">9</div><div class="cal-cell present">10</div><div class="cal-cell holiday">11</div>
+          <div class="cal-cell holiday">12</div><div class="cal-cell present">13</div><div class="cal-cell present">14</div><div class="cal-cell absent">15</div><div class="cal-cell present">16</div><div class="cal-cell present">17</div><div class="cal-cell holiday">18</div>
+          <div class="cal-cell holiday">19</div><div class="cal-cell present">20</div><div class="cal-cell present">21</div><div class="cal-cell present">22</div><div class="cal-cell absent">23</div><div class="cal-cell present">24</div><div class="cal-cell holiday">25</div>
+          <div class="cal-cell holiday">26</div><div class="cal-cell present">27</div><div class="cal-cell today">28</div><div class="cal-cell empty">29</div><div class="cal-cell empty">30</div><div class="cal-cell empty"></div><div class="cal-cell empty"></div>
+        </div>
+        <div style="display:flex;gap:14px;flex-wrap:wrap;margin-top:10px;font-size:12px;">
+          <span><span style="display:inline-block;width:14px;height:14px;background:#d4edda;border-radius:3px;"></span> Present</span>
+          <span><span style="display:inline-block;width:14px;height:14px;background:#f8d7da;border-radius:3px;"></span> Absent</span>
+          <span><span style="display:inline-block;width:14px;height:14px;background:#fff3cd;border-radius:3px;"></span> Holiday/Weekend</span>
+          <span><span style="display:inline-block;width:14px;height:14px;border:2px solid #3b1fa3;border-radius:3px;"></span> Today</span>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PAID FEES ============ -->
+  <div class="section-panel" id="sec_paidfees">
+    <div class="panel-header"><span class="ph-icon">💳</span> Paid Fees — 2025-2026</div>
+    <div class="panel-body">
+      <div class="fees-summary">
+        <div class="fee-box"><div class="fb-label">Total Fee</div><div class="fb-val">₹85,000</div></div>
+        <div class="fee-box" style="background:linear-gradient(135deg,#00b09b,#00d2ff);"><div class="fb-label">Paid</div><div class="fb-val">₹42,000</div></div>
+        <div class="fee-box" style="background:linear-gradient(135deg,#ff4757,#ff6b81);"><div class="fb-label">Pending</div><div class="fb-val">₹43,000</div></div>
+      </div>
+      <table class="fee-table">
+        <thead><tr><th>Receipt No.</th><th>Date</th><th>Description</th><th>Amount</th><th>Status</th></tr></thead>
+        <tbody>
+          <tr><td>RCP-2025-001</td><td>10 Jul 2025</td><td>Tuition Fee — Sem I</td><td>₹21,000</td><td class="status-paid">✅ Paid</td></tr>
+          <tr><td>RCP-2025-002</td><td>10 Jul 2025</td><td>Development Fee</td><td>₹8,000</td><td class="status-paid">✅ Paid</td></tr>
+          <tr><td>RCP-2025-003</td><td>12 Jan 2026</td><td>Tuition Fee — Sem II</td><td>₹13,000</td><td class="status-paid">✅ Paid</td></tr>
+          <tr><td>RCP-2025-004</td><td>—</td><td>Exam Fee</td><td>₹5,500</td><td class="status-pending">⏳ Pending</td></tr>
+          <tr><td>RCP-2025-005</td><td>—</td><td>Hostel Fee</td><td>₹37,500</td><td class="status-pending">⏳ Pending</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ PAY FEE ============ -->
+  <div class="section-panel" id="sec_payfee">
+    <div class="panel-header"><span class="ph-icon">💰</span> Pay Fee Online</div>
+    <div class="panel-body">
+      <div style="background:#fff3cd;border-radius:10px;padding:14px;margin-bottom:16px;font-size:13px;color:#856404;">
+        ⚠️ Due Amount: <strong>₹43,000</strong> — Last Date: <strong>30 May 2026</strong>
+      </div>
+      <div style="display:flex;flex-direction:column;gap:12px;max-width:450px;">
+        <div><label style="font-size:13px;font-weight:600;color:#2d1a8e;display:block;margin-bottom:4px;">Select Fee Type</label>
+          <select style="width:100%;padding:9px 12px;border:1.5px solid #d0d0d0;border-radius:8px;font-size:13px;outline:none;font-family:Poppins,sans-serif;">
+            <option>Exam Fee — ₹5,500</option>
+            <option>Hostel Fee — ₹37,500</option>
+            <option>Library Fee — ₹500</option>
+          </select>
+        </div>
+        <div><label style="font-size:13px;font-weight:600;color:#2d1a8e;display:block;margin-bottom:4px;">Payment Mode</label>
+          <select style="width:100%;padding:9px 12px;border:1.5px solid #d0d0d0;border-radius:8px;font-size:13px;outline:none;font-family:Poppins,sans-serif;">
+            <option>UPI / QR Code</option>
+            <option>Net Banking</option>
+            <option>Credit / Debit Card</option>
+            <option>NEFT / RTGS</option>
+          </select>
+        </div>
+        <button onclick="showToast('✅ Redirecting to payment gateway...')" style="background:linear-gradient(135deg,#3b1fa3,#6c3fc7);color:white;border:none;padding:12px;border-radius:8px;font-size:14px;font-weight:700;cursor:pointer;margin-top:6px;">
+          💳 Proceed to Pay
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ ASSIGNMENT ============ -->
+  <div class="section-panel" id="sec_assignment">
+    <div class="panel-header"><span class="ph-icon">📝</span> Assignments</div>
+    <div class="panel-body">
+      <div class="assignment-card">
+        <div class="ac-header"><div class="ac-title">Database Design Project</div><span class="badge badge-orange">Due Soon</span></div>
+        <div class="ac-sub">Database Management System (BCG-202-V)</div>
+        <div class="ac-desc">Design a complete ER diagram and normalized relational schema for a Hospital Management System. Include all entities, relationships, and at least 3NF normalization. Submit as PDF.</div>
+        <div class="ac-meta"><span>📅 Due: 5 May 2026</span><span>📎 Max Marks: 20</span><span>👨‍🏫 Prof. Sharma</span></div>
+        <div style="margin-top:10px;"><button class="upload-btn" onclick="showToast('📤 Upload window opened!')">📤 Upload Submission</button></div>
+      </div>
+      <div class="assignment-card">
+        <div class="ac-header"><div class="ac-title">Python Flask Web App</div><span class="badge badge-blue">Submitted</span></div>
+        <div class="ac-sub">Python Programming (BCG-206-V)</div>
+        <div class="ac-desc">Build a simple Flask web application with user login, registration and dashboard. Use SQLite as the database. Deploy locally and submit source code as ZIP.</div>
+        <div class="ac-meta"><span>📅 Due: 22 Apr 2026</span><span>📎 Max Marks: 30</span><span>👨‍🏫 Prof. Meena</span></div>
+        <div style="margin-top:10px;font-size:12px;color:#2ed573;font-weight:600;">✅ Submitted on 21 Apr 2026 — Awaiting Grade</div>
+      </div>
+      <div class="assignment-card">
+        <div class="ac-header"><div class="ac-title">Probability Report</div><span class="badge badge-red">Pending</span></div>
+        <div class="ac-sub">Probability and Statistics (BCG-202-V)</div>
+        <div class="ac-desc">Write a 2000-word report on real-world applications of Bayes' theorem. Include at least 5 examples and statistical calculations. Submit in DOCX format.</div>
+        <div class="ac-meta"><span>📅 Due: 2 May 2026</span><span>📎 Max Marks: 15</span><span>👨‍🏫 Prof. Joshi</span></div>
+        <div style="margin-top:10px;"><button class="upload-btn" onclick="showToast('📤 Upload window opened!')">📤 Upload Submission</button></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ EVENT ============ -->
+  <div class="section-panel" id="sec_event">
+    <div class="panel-header"><span class="ph-icon">🎉</span> Upcoming Events</div>
+    <div class="panel-body">
+      <div class="event-card">
+        <div class="event-date-box"><div class="ed-day">05</div><div class="ed-mon">MAY</div></div>
+        <div class="event-info"><div class="ev-title">🏅 Annual Sports Day 2026</div><div class="ev-desc">Celebrate the spirit of sports! Events include cricket, football, badminton, and athletics. All students must wear sports uniform.</div><div class="ev-time">📍 College Ground | ⏰ 8:00 AM – 5:00 PM</div></div>
+      </div>
+      <div class="event-card">
+        <div class="event-date-box" style="background:linear-gradient(135deg,#00b09b,#00d2ff);"><div class="ed-day">12</div><div class="ed-mon">MAY</div></div>
+        <div class="event-info"><div class="ev-title">💻 TechFest 2026 — Innovate & Create</div><div class="ev-desc">Annual technical festival featuring hackathon, coding contests, project expo, and guest lectures from industry experts.</div><div class="ev-time">📍 Main Auditorium | ⏰ 9:00 AM – 6:00 PM</div></div>
+      </div>
+      <div class="event-card">
+        <div class="event-date-box" style="background:linear-gradient(135deg,#ff6b6b,#ff4757);"><div class="ed-day">20</div><div class="ed-mon">MAY</div></div>
+        <div class="event-info"><div class="ev-title">🎭 Cultural Fest — Rangmanch</div><div class="ev-desc">An evening of dance, drama, music and art. Students can register for individual and group performances. Prizes worth ₹50,000!</div><div class="ev-time">📍 College Auditorium | ⏰ 4:00 PM – 9:00 PM</div></div>
+      </div>
+      <div class="event-card">
+        <div class="event-date-box" style="background:linear-gradient(135deg,#f9ca24,#f0932b);"><div class="ed-day">01</div><div class="ed-mon">JUN</div></div>
+        <div class="event-info"><div class="ev-title">🎓 Alumni Meet 2026</div><div class="ev-desc">Connect with alumni from various batches. Networking sessions, success stories, and placement guidance for current students.</div><div class="ev-time">📍 Conference Hall | ⏰ 10:00 AM – 3:00 PM</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ TIMETABLE ============ -->
+  <div class="section-panel" id="sec_timetable">
+    <div class="panel-header"><span class="ph-icon">🕐</span> Weekly Timetable — Even Semester</div>
+    <div class="panel-body" style="overflow-x:auto;">
+      <table class="tt-table">
+        <thead>
+          <tr>
+            <th>Time</th><th>Monday</th><th>Tuesday</th><th>Wednesday</th><th>Thursday</th><th>Friday</th><th>Saturday</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr><td><strong>8:00–9:00</strong></td><td><div class="tt-cell">Python (BCG-206)</div></td><td><div class="tt-cell">DBMS (BCG-202)</div></td><td><div class="tt-cell">OS (BCG-204)</div></td><td><div class="tt-cell">DS (BCG-204)</div></td><td><div class="tt-cell">Python Lab</div></td><td><div class="tt-cell">DBMS Lab</div></td></tr>
+          <tr><td><strong>9:00–10:00</strong></td><td><div class="tt-cell">Prob & Stat (BCG-202)</div></td><td><div class="tt-cell">Python (BCG-206)</div></td><td><div class="tt-cell">DBMS (BCG-202)</div></td><td><div class="tt-cell">OS (BCG-204)</div></td><td><div class="tt-cell">Python Lab</div></td><td><div class="tt-cell">OS Lab</div></td></tr>
+          <tr><td><strong>10:00–11:00</strong></td><td><div class="tt-break">☕ Break</div></td><td><div class="tt-break">☕ Break</div></td><td><div class="tt-break">☕ Break</div></td><td><div class="tt-break">☕ Break</div></td><td><div class="tt-break">☕ Break</div></td><td><div class="tt-break">☕ Break</div></td></tr>
+          <tr><td><strong>11:00–12:00</strong></td><td><div class="tt-cell">Mentoring (MM01)</div></td><td><div class="tt-cell">Wireless Comm (BCG-216)</div></td><td><div class="tt-cell">IKS (VAC-104)</div></td><td><div class="tt-cell">Prob & Stat (BCG-202)</div></td><td><div class="tt-cell">DS (BCG-204)</div></td><td class="tt-free">—</td></tr>
+          <tr><td><strong>12:00–1:00</strong></td><td><div class="tt-cell">Logical Org (BCG-208)</div></td><td><div class="tt-cell">AEC (AEC-109)</div></td><td><div class="tt-cell">Wireless Comm</div></td><td><div class="tt-cell">IKS (VAC-104)</div></td><td><div class="tt-cell">AEC (AEC-109)</div></td><td class="tt-free">—</td></tr>
+          <tr><td><strong>1:00–2:00</strong></td><td colspan="6"><div class="tt-break" style="text-align:center;">🍽️ Lunch Break</div></td></tr>
+          <tr><td><strong>2:00–4:00</strong></td><td><div class="tt-cell">DBMS Lab (BCG-210)</div></td><td class="tt-free">—</td><td><div class="tt-cell">OS Lab (BCG-212)</div></td><td><div class="tt-cell">DS Lab R (BCG-206)</div></td><td><div class="tt-cell">Prob & Stat Lab</div></td><td class="tt-free">—</td></tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+
+  <!-- ============ RESULT ============ -->
+  <div class="section-panel" id="sec_result">
+    <div class="panel-header"><span class="ph-icon">📊</span> Examination Results</div>
+    <div class="panel-body">
+      <div class="result-card">
+        <div class="result-header">
+          <div><div style="font-size:16px;font-weight:700;">Semester III — 2024-25</div><div style="font-size:12px;opacity:0.8;">Result Declared: Feb 2025</div></div>
+          <div class="grade-circle" id="res_grade">B+</div>
+        </div>
+        <div class="result-body">
+          <table class="result-table" id="resultTable">
+            <thead><tr><th>Subject</th><th>Internal</th><th>External</th><th>Total</th><th>Grade</th></tr></thead>
+            <tbody id="resultBody"></tbody>
+          </table>
+          <div style="margin-top:14px;padding:12px;background:#f0f0ff;border-radius:8px;display:flex;gap:20px;flex-wrap:wrap;font-size:13px;">
+            <span>Total Marks: <strong id="res_total">510 / 700</strong></span>
+            <span>SGPA: <strong id="res_sgpa">7.8</strong></span>
+            <span>CGPA: <strong>7.6</strong></span>
+            <span>Result: <strong style="color:#2ed573;">PASS</strong></span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ NOTICE BOARD ============ -->
+  <div class="section-panel" id="sec_noticeboard">
+    <div class="panel-header"><span class="ph-icon">📌</span> Notice Board</div>
+    <div class="panel-body">
+      <div class="notice-item">
+        <div class="ni-title">📢 End Semester Exam Schedule Released</div>
+        <div class="ni-body">The end semester examination schedule for May 2026 has been published. Students can download their admit cards from the portal from 5 May 2026.</div>
+        <div class="ni-date">28 April 2026</div>
+      </div>
+      <div class="notice-item" style="border-color:#2ed573;">
+        <div class="ni-title">🏆 Scholarship Applications Open</div>
+        <div class="ni-body">Merit-based and need-based scholarship applications for 2026-27 are now open. Eligible students must submit their applications by 15 May 2026 with required documents.</div>
+        <div class="ni-date">25 April 2026</div>
+      </div>
+      <div class="notice-item" style="border-color:#ffa502;">
+        <div class="ni-title">📅 Holiday Notice — Buddha Purnima</div>
+        <div class="ni-body">The college will remain closed on 12 May 2026 on account of Buddha Purnima. Classes will resume on 13 May 2026.</div>
+        <div class="ni-date">20 April 2026</div>
+      </div>
+      <div class="notice-item" style="border-color:#ff4757;">
+        <div class="ni-title">⚠️ Attendance Warning</div>
+        <div class="ni-body">Students with attendance below 75% will not be permitted to appear in the end semester examinations. Please regularize your attendance immediately.</div>
+        <div class="ni-date">15 April 2026</div>
+      </div>
+      <div class="notice-item" style="border-color:#00d2ff;">
+        <div class="ni-title">💻 Online Internship Portal Open</div>
+        <div class="ni-body">Students of Semester III and above can now register for summer internships through the college internship portal. Last date: 10 May 2026.</div>
+        <div class="ni-date">10 April 2026</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ GALLERY ============ -->
+  <div class="section-panel" id="sec_gallery">
+    <div class="panel-header"><span class="ph-icon">🖼️</span> College Gallery</div>
+    <div class="panel-body">
+      <div style="display:flex;gap:10px;margin-bottom:14px;flex-wrap:wrap;">
+        <button onclick="showToast('Showing All photos')" style="background:#3b1fa3;color:white;border:none;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">All</button>
+        <button onclick="showToast('Showing Events photos')" style="background:#f0f0ff;color:#3b1fa3;border:1.5px solid #6c3fc7;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">Events</button>
+        <button onclick="showToast('Showing Sports photos')" style="background:#f0f0ff;color:#3b1fa3;border:1.5px solid #6c3fc7;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">Sports</button>
+        <button onclick="showToast('Showing Campus photos')" style="background:#f0f0ff;color:#3b1fa3;border:1.5px solid #6c3fc7;padding:6px 14px;border-radius:20px;cursor:pointer;font-size:12px;font-weight:600;">Campus</button>
+      </div>
+      <div class="gallery-grid">
+        <div class="gallery-item" style="--c1:#6c3fc7;--c2:#3b1fa3;" onclick="showToast('🖼️ Opening: TechFest 2026')">🖥️<div class="gi-label">TechFest 2026</div></div>
+        <div class="gallery-item" style="--c1:#00b09b;--c2:#00d2ff;" onclick="showToast('🖼️ Opening: Sports Day')">🏅<div class="gi-label">Sports Day</div></div>
+        <div class="gallery-item" style="--c1:#ff6b6b;--c2:#ff4757;" onclick="showToast('🖼️ Opening: Cultural Fest')">🎭<div class="gi-label">Cultural Fest</div></div>
+        <div class="gallery-item" style="--c1:#f9ca24;--c2:#f0932b;" onclick="showToast('🖼️ Opening: Convocation')">🎓<div class="gi-label">Convocation</div></div>
+        <div class="gallery-item" style="--c1:#a29bfe;--c2:#6c5ce7;" onclick="showToast('🖼️ Opening: Science Expo')">🔬<div class="gi-label">Science Expo</div></div>
+        <div class="gallery-item" style="--c1:#fd79a8;--c2:#e84393;" onclick="showToast('🖼️ Opening: Freshers Party')">🎉<div class="gi-label">Freshers Party</div></div>
+        <div class="gallery-item" style="--c1:#55efc4;--c2:#00b894;" onclick="showToast('🖼️ Opening: Tree Plantation')">🌱<div class="gi-label">Tree Plantation</div></div>
+        <div class="gallery-item" style="--c1:#74b9ff;--c2:#0984e3;" onclick="showToast('🖼️ Opening: College Campus')">🏫<div class="gi-label">College Campus</div></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ MY TEACHER ============ -->
+  <div class="section-panel" id="sec_myteacher">
+    <div class="panel-header"><span class="ph-icon">👨‍🏫</span> My Teachers</div>
+    <div class="panel-body">
+      <div class="teacher-card"><div class="tc-avatar">RS</div><div class="tc-info"><div class="tc-name">Prof. Rajesh Sharma</div><div class="tc-sub">Database Management System (BCG-202-V)</div><div class="tc-contact">📧 r.sharma@acem.edu.in | 📱 9811XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Sharma')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">PM</div><div class="tc-info"><div class="tc-name">Prof. Priya Meena</div><div class="tc-sub">Python Programming (BCG-206-V)</div><div class="tc-contact">📧 p.meena@acem.edu.in | 📱 9910XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Meena')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">AJ</div><div class="tc-info"><div class="tc-name">Prof. Arun Joshi</div><div class="tc-sub">Probability & Statistics (BCG-202-V)</div><div class="tc-contact">📧 a.joshi@acem.edu.in | 📱 9988XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Joshi')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">SK</div><div class="tc-info"><div class="tc-name">Prof. Sunita Kumar</div><div class="tc-sub">Design of Unix OS (BCG-204-V, BCG-212-V)</div><div class="tc-contact">📧 s.kumar@acem.edu.in | 📱 9871XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Kumar')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">VG</div><div class="tc-info"><div class="tc-name">Prof. Vijay Gupta</div><div class="tc-sub">Wireless Communications (BCG-216-V)</div><div class="tc-contact">📧 v.gupta@acem.edu.in | 📱 9845XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Gupta')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">MK</div><div class="tc-info"><div class="tc-name">Prof. Mohan Kapoor</div><div class="tc-sub">Data Science using R (BCG-204-V)</div><div class="tc-contact">📧 m.kapoor@acem.edu.in | 📱 9765XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Kapoor')">💬 Message</button></div>
+    </div>
+  </div>
+
+  <!-- ============ LIVE CLASS ============ -->
+  <div class="section-panel" id="sec_liveclass">
+    <div class="panel-header"><span class="ph-icon">📡</span> Live Classes</div>
+    <div class="panel-body">
+      <div class="live-card">
+        <div class="lc-info"><div class="lc-sub">🔴 DBMS — Normalization Deep Dive<span class="live-badge">LIVE</span></div><div class="lc-time">📅 Today, 2:00 PM – 3:30 PM | Prof. Rajesh Sharma</div></div>
+        <button class="join-btn" onclick="showToast('📡 Joining DBMS Live Class...')">▶ Join Now</button>
+      </div>
+      <div class="live-card">
+        <div class="lc-info"><div class="lc-sub">Python Flask — REST APIs</div><div class="lc-time">📅 Tomorrow, 10:00 AM – 11:30 AM | Prof. Priya Meena</div></div>
+        <button style="background:#f0f0ff;color:#3b1fa3;border:1.5px solid #6c3fc7;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;" onclick="showToast('⏰ Reminder set for Python class!')">🔔 Remind Me</button>
+      </div>
+      <div class="live-card">
+        <div class="lc-info"><div class="lc-sub">Probability — Bayes Theorem</div><div class="lc-time">📅 30 Apr 2026, 11:00 AM – 12:00 PM | Prof. Arun Joshi</div></div>
+        <button style="background:#f0f0ff;color:#3b1fa3;border:1.5px solid #6c3fc7;padding:8px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:700;" onclick="showToast('⏰ Reminder set for Stats class!')">🔔 Remind Me</button>
+      </div>
+      <div style="margin-top:14px;">
+        <div class="panel-header" style="border-radius:8px 8px 0 0;font-size:13px;"><span class="ph-icon">🎬</span> Recorded Lectures</div>
+        <div style="padding:14px;background:#f8f5ff;border-radius:0 0 8px 8px;">
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e0e0e0;font-size:13px;"><span>🎬 Python — Functions & Modules (45 min)</span><button onclick="showToast('▶ Playing video...')" style="background:#3b1fa3;color:white;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;">▶ Play</button></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #e0e0e0;font-size:13px;"><span>🎬 DBMS — SQL Joins (52 min)</span><button onclick="showToast('▶ Playing video...')" style="background:#3b1fa3;color:white;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;">▶ Play</button></div>
+          <div style="display:flex;justify-content:space-between;align-items:center;padding:8px 0;font-size:13px;"><span>🎬 OS — Process Scheduling (38 min)</span><button onclick="showToast('▶ Playing video...')" style="background:#3b1fa3;color:white;border:none;padding:4px 12px;border-radius:6px;cursor:pointer;font-size:11px;font-weight:600;">▶ Play</button></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ FEEDBACK ============ -->
+  <div class="section-panel" id="sec_feedback">
+    <div class="panel-header"><span class="ph-icon">💬</span> Feedback Form</div>
+    <div class="panel-body">
+      <div class="feedback-form">
+        <div class="ff-group"><label>Select Subject</label>
+          <select><option>Database Management System (BCG-202-V)</option><option>Python Programming (BCG-206-V)</option><option>OS (BCG-204-V)</option><option>Probability & Statistics</option><option>Wireless Communications</option></select>
+        </div>
+        <div class="ff-group"><label>Teaching Quality</label><div class="star-row" id="stars1" onmouseover="hoverStars(this,event)" onclick="clickStars(this)">★★★★★</div></div>
+        <div class="ff-group"><label>Course Content</label><div class="star-row" id="stars2">★★★★☆</div></div>
+        <div class="ff-group"><label>Overall Experience</label><div class="star-row" id="stars3">★★★★☆</div></div>
+        <div class="ff-group"><label>Your Feedback</label><textarea rows="4" placeholder="Share your thoughts about the teaching and course content..."></textarea></div>
+        <div class="ff-group"><label>Any Suggestions?</label><textarea rows="3" placeholder="Write any suggestions for improvement..."></textarea></div>
+        <button class="submit-btn" onclick="showToast('✅ Feedback submitted successfully!')">Submit Feedback</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ UPLOAD DOCUMENT ============ -->
+  <div class="section-panel" id="sec_uploaddoc">
+    <div class="panel-header"><span class="ph-icon">📤</span> Upload Document</div>
+    <div class="panel-body">
+      <div class="upload-area" onclick="showToast('📂 File picker opened!')">
+        <div class="upload-icon">📂</div>
+        <p><strong>Click to upload</strong> or drag and drop</p>
+        <p style="font-size:12px;color:#888;margin-top:6px;">Supported: PDF, JPG, PNG, DOCX (Max 10MB)</p>
+      </div>
+      <div class="ff-group" style="margin-bottom:14px;"><label style="font-size:13px;font-weight:600;color:#2d1a8e;display:block;margin-bottom:4px;">Document Type</label>
+        <select style="width:100%;max-width:350px;padding:9px 12px;border:1.5px solid #d0d0d0;border-radius:8px;font-size:13px;outline:none;font-family:Poppins,sans-serif;"><option>Aadhar Card</option><option>Marksheet</option><option>TC / Migration Certificate</option><option>Caste Certificate</option><option>Medical Certificate</option><option>Other</option></select>
+      </div>
+      <div style="margin-bottom:18px;"><h4 style="font-size:13px;color:#2d1a8e;margin-bottom:10px;">Uploaded Documents</h4>
+        <table class="docs-list">
+          <thead><tr><th>Document Name</th><th>Type</th><th>Date</th><th>Status</th></tr></thead>
+          <tbody>
+            <tr><td>📄 Aadhar_Nikhil.pdf</td><td>Aadhar Card</td><td>10 Jul 2025</td><td><span class="badge badge-green">Verified</span></td></tr>
+            <tr><td>📄 Class12_Marksheet.pdf</td><td>Marksheet</td><td>10 Jul 2025</td><td><span class="badge badge-green">Verified</span></td></tr>
+            <tr><td>📄 TC_Certificate.pdf</td><td>TC</td><td>12 Jul 2025</td><td><span class="badge badge-orange">Pending</span></td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ PARENT'S REQUEST ============ -->
+  <div class="section-panel" id="sec_parentrequest">
+    <div class="panel-header"><span class="ph-icon">👨‍👩‍👦</span> Parent's Request</div>
+    <div class="panel-body">
+      <div class="pr-form">
+        <div class="ff-group"><label>Request Type</label>
+          <select><option>Leave Application</option><option>Fee Concession</option><option>Meeting with Principal</option><option>Attendance Query</option><option>Transport Request</option><option>Other</option></select>
+        </div>
+        <div class="ff-group"><label>Parent/Guardian Name</label><input type="text" value="SIDDH NARAYAN BADAL" id="parentName"></div>
+        <div class="ff-group"><label>Parent Mobile Number</label><input type="tel" value="9891561480"></div>
+        <div class="ff-group"><label>Details / Message</label><textarea rows="4" placeholder="Describe your request in detail..."></textarea></div>
+        <button class="submit-btn" onclick="showToast('✅ Request submitted successfully!')">Submit Request</button>
+      </div>
+      <div class="request-history" id="reqHistory">
+        <h4 style="font-size:13px;color:#2d1a8e;margin-bottom:10px;">Past Requests</h4>
+        <div class="rh-item"><div><div class="rh-type">Leave Application (Medical)</div><div class="rh-date">15 March 2026</div></div><span class="badge badge-green">Approved</span></div>
+        <div class="rh-item"><div><div class="rh-type">Fee Concession Request</div><div class="rh-date">10 Jan 2026</div></div><span class="badge badge-orange">Pending</span></div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ LIBRARY ============ -->
+  <div class="section-panel" id="sec_library">
+    <div class="panel-header"><span class="ph-icon">📚</span> Library</div>
+    <div class="panel-body">
+      <div style="background:#f0f0ff;border-radius:10px;padding:14px;margin-bottom:16px;display:flex;gap:20px;flex-wrap:wrap;font-size:13px;">
+        <span>📚 Books Issued: <strong>2</strong></span>
+        <span>📅 Max Allowed: <strong>3 Books</strong></span>
+        <span>💰 Fine Due: <strong style="color:#ff4757;">₹0</strong></span>
+      </div>
+      <div class="library-card">
+        <div class="book-icon">📖</div>
+        <div class="lib-info"><div class="lib-title">Database System Concepts — 7th Edition</div><div class="lib-author">Silberschatz, Korth, Sudarshan</div></div>
+        <div class="lib-due"><div>Due: <span class="due-date">10 May 2026</span></div><button class="return-btn" onclick="showToast('📚 Return request raised!')">Return</button></div>
+      </div>
+      <div class="library-card">
+        <div class="book-icon">📗</div>
+        <div class="lib-info"><div class="lib-title">Introduction to Algorithms — 3rd Edition</div><div class="lib-author">Cormen, Leiserson, Rivest, Stein</div></div>
+        <div class="lib-due"><div>Due: <span class="due-date">15 May 2026</span></div><button class="return-btn" onclick="showToast('📚 Return request raised!')">Return</button></div>
+      </div>
+      <div style="margin-top:14px;"><h4 style="font-size:13px;color:#2d1a8e;margin-bottom:10px;">🔍 Search Books</h4>
+        <div style="display:flex;gap:10px;flex-wrap:wrap;">
+          <input type="text" placeholder="Search by title, author or ISBN..." style="flex:1;min-width:200px;padding:9px 12px;border:1.5px solid #d0d0d0;border-radius:8px;font-size:13px;outline:none;font-family:Poppins,sans-serif;">
+          <button onclick="showToast('🔍 Searching library catalog...')" style="background:#3b1fa3;color:white;border:none;padding:9px 18px;border-radius:8px;cursor:pointer;font-size:13px;font-weight:600;">Search</button>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- ============ CHANGE PASSWORD ============ -->
+  <div class="section-panel" id="sec_changepassword">
+    <div class="panel-header"><span class="ph-icon">🔒</span> Change Password</div>
+    <div class="panel-body">
+      <div class="pwd-form" style="max-width:400px;">
+        <div class="ff-group"><label>Current Password</label><input type="password" placeholder="Enter current password"></div>
+        <div class="ff-group"><label>New Password</label><input type="password" placeholder="Enter new password"></div>
+        <div class="ff-group"><label>Confirm New Password</label><input type="password" placeholder="Confirm new password"></div>
+        <div style="background:#f0f0ff;border-radius:8px;padding:12px;font-size:12px;color:#555;margin-bottom:14px;">
+          <strong style="color:#2d1a8e;">Password Requirements:</strong><br>
+          • Minimum 8 characters<br>
+          • At least one uppercase letter<br>
+          • At least one number<br>
+          • At least one special character
+        </div>
+        <button class="submit-btn" onclick="showToast('✅ Password changed successfully!')">Update Password</button>
+      </div>
+    </div>
+  </div>
+
+</div><!-- end content -->
+</div><!-- end main-layout -->
+
+<div class="toast" id="toast"></div>
+
+<script>
+// =========== STUDENT DATA ===========
+const students = [
+  {
+    id: "240438", name: "NIKHIL BADAL", initials: "N", class: "BCA (DIGSY B)",
+    dob: "30/03/2005", mobile: "9891561480", parents: "SIDDH NARAYAN BADAL, SAROJ BADAL",
+    present: 194, absent: 34, total: 228, pct: "85.09",
+    parentName: "SIDDH NARAYAN BADAL",
+    result: { grade: "B+", sgpa: "7.8", total: "510 / 700" },
+    subjects: [
+      {name:"Mentoring (MM01)",present:7,absent:1,total:8,pct:87.50},
+      {name:"Python Programming Lab (BCG-214-V)",present:8,absent:2,total:10,pct:80.00},
+      {name:"Design of Unix OS Lab (BCG-212-V)",present:4,absent:2,total:6,pct:66.67},
+      {name:"Database Management System Lab (BCG-210-V)",present:10,absent:1,total:11,pct:90.91},
+      {name:"Database Management System (BCG-202-V)",present:32,absent:2,total:34,pct:94.12},
+      {name:"Design of Unix OS (BCG-204-V)",present:14,absent:0,total:14,pct:100.00},
+      {name:"Python Programming (BCG-206-V)",present:14,absent:3,total:17,pct:82.35},
+      {name:"Logical Organization of Compute (BCG-208-V)",present:24,absent:7,total:31,pct:77.42},
+      {name:"Wireless Communications (BCG-216-V)",present:31,absent:3,total:34,pct:91.18},
+      {name:"Indian Knowledge System (VAC-104-V)",present:15,absent:5,total:20,pct:75.00},
+      {name:"Critical Thinking and Rhetorical Communication (AEC-109-V)",present:9,absent:1,total:10,pct:90.00},
+      {name:"Probability and Statistics (BCG-202-V)",present:8,absent:4,total:12,pct:66.67},
+      {name:"Data Science using R (BCG-204-V)",present:10,absent:2,total:12,pct:83.33},
+      {name:"Data Science using R Lab (BCG-206-V)",present:5,absent:0,total:5,pct:100.00},
+      {name:"Probability and Statistics Lab (BCG-212-V)",present:3,absent:1,total:4,pct:75.00},
+    ],
+    resultSubjects: [
+      {sub:"Database Management System",internal:22,external:52,total:74,grade:"A"},
+      {sub:"Python Programming",internal:24,external:58,total:82,grade:"A+"},
+      {sub:"Design of Unix OS",internal:20,external:48,total:68,grade:"B+"},
+      {sub:"Wireless Communications",internal:19,external:45,total:64,grade:"B"},
+      {sub:"Probability & Statistics",internal:18,external:42,total:60,grade:"B"},
+      {sub:"Data Science using R",internal:21,external:54,total:75,grade:"A"},
+      {sub:"Environmental Studies",internal:23,external:64,total:87,grade:"A+"},
+    ]
+  },
+  {
+    id: "240452", name: "MANNAT SHARMA", initials: "M", class: "BCA (DIGSY B)",
+    dob: "15/07/2005", mobile: "9812XXXXXX", parents: "VIKRAM SHARMA, SUNITA SHARMA",
+    present: 205, absent: 23, total: 228, pct: "89.91",
+    parentName: "VIKRAM SHARMA",
+    result: { grade: "A", sgpa: "8.4", total: "578 / 700" },
+    subjects: [
+      {name:"Mentoring (MM01)",present:7,absent:1,total:8,pct:87.50},
+      {name:"Python Programming Lab (BCG-214-V)",present:9,absent:1,total:10,pct:90.00},
+      {name:"Design of Unix OS Lab (BCG-212-V)",present:5,absent:1,total:6,pct:83.33},
+      {name:"Database Management System Lab (BCG-210-V)",present:10,absent:1,total:11,pct:90.91},
+      {name:"Database Management System (BCG-202-V)",present:32,absent:2,total:34,pct:94.12},
+      {name:"Design of Unix OS (BCG-204-V)",present:14,absent:0,total:14,pct:100.00},
+      {name:"Python Programming (BCG-206-V)",present:16,absent:1,total:17,pct:94.12},
+      {name:"Logical Organization of Compute (BCG-208-V)",present:27,absent:4,total:31,pct:87.10},
+      {name:"Wireless Communications (BCG-216-V)",present:31,absent:3,total:34,pct:91.18},
+      {name:"Indian Knowledge System (VAC-104-V)",present:16,absent:4,total:20,pct:80.00},
+      {name:"Critical Thinking and Rhetorical Communication (AEC-109-V)",present:9,absent:1,total:10,pct:90.00},
+      {name:"Probability and Statistics (BCG-202-V)",present:10,absent:2,total:12,pct:83.33},
+      {name:"Data Science using R (BCG-204-V)",present:10,absent:2,total:12,pct:83.33},
+      {name:"Data Science using R Lab (BCG-206-V)",present:5,absent:0,total:5,pct:100.00},
+      {name:"Probability and Statistics Lab (BCG-212-V)",present:4,absent:0,total:4,pct:100.00},
+    ],
+    resultSubjects: [
+      {sub:"Database Management System",internal:24,external:60,total:84,grade:"A+"},
+      {sub:"Python Programming",internal:26,external:62,total:88,grade:"A+"},
+      {sub:"Design of Unix OS",internal:23,external:55,total:78,grade:"A"},
+      {sub:"Wireless Communications",internal:21,external:50,total:71,grade:"A"},
+      {sub:"Probability & Statistics",internal:20,external:48,total:68,grade:"B+"},
+      {sub:"Data Science using R",internal:23,external:55,total:78,grade:"A"},
+      {sub:"Environmental Studies",internal:24,external:87,total:111,grade:"A+"},
+    ]
+  },
+  {
+    id: "240467", name: "NIKHIL KRISHNA", initials: "NK", class: "BCA (DIGSY B)",
+    dob: "02/11/2004", mobile: "9765XXXXXX", parents: "KRISHNA MURARI, GEETA DEVI",
+    present: 178, absent: 50, total: 228, pct: "78.07",
+    parentName: "KRISHNA MURARI",
+    result: { grade: "B", sgpa: "7.2", total: "465 / 700" },
+    subjects: [
+      {name:"Mentoring (MM01)",present:6,absent:2,total:8,pct:75.00},
+      {name:"Python Programming Lab (BCG-214-V)",present:8,absent:2,total:10,pct:80.00},
+      {name:"Design of Unix OS Lab (BCG-212-V)",present:4,absent:2,total:6,pct:66.67},
+      {name:"Database Management System Lab (BCG-210-V)",present:9,absent:2,total:11,pct:81.82},
+      {name:"Database Management System (BCG-202-V)",present:27,absent:7,total:34,pct:79.41},
+      {name:"Design of Unix OS (BCG-204-V)",present:11,absent:3,total:14,pct:78.57},
+      {name:"Python Programming (BCG-206-V)",present:13,absent:4,total:17,pct:76.47},
+      {name:"Logical Organization of Compute (BCG-208-V)",present:23,absent:8,total:31,pct:74.19},
+      {name:"Wireless Communications (BCG-216-V)",present:27,absent:7,total:34,pct:79.41},
+      {name:"Indian Knowledge System (VAC-104-V)",present:16,absent:4,total:20,pct:80.00},
+      {name:"Critical Thinking and Rhetorical Communication (AEC-109-V)",present:8,absent:2,total:10,pct:80.00},
+      {name:"Probability and Statistics (BCG-202-V)",present:9,absent:3,total:12,pct:75.00},
+      {name:"Data Science using R (BCG-204-V)",present:9,absent:3,total:12,pct:75.00},
+      {name:"Data Science using R Lab (BCG-206-V)",present:4,absent:1,total:5,pct:80.00},
+      {name:"Probability and Statistics Lab (BCG-212-V)",present:4,absent:0,total:4,pct:100.00},
+    ],
+    resultSubjects: [
+      {sub:"Database Management System",internal:19,external:45,total:64,grade:"B"},
+      {sub:"Python Programming",internal:21,external:50,total:71,grade:"B+"},
+      {sub:"Design of Unix OS",internal:18,external:42,total:60,grade:"B"},
+      {sub:"Wireless Communications",internal:17,external:40,total:57,grade:"C+"},
+      {sub:"Probability & Statistics",internal:16,external:38,total:54,grade:"C+"},
+      {sub:"Data Science using R",internal:19,external:44,total:63,grade:"B"},
+      {sub:"Environmental Studies",internal:20,external:76,total:96,grade:"A"},
+    ]
+  }
+];
+
+let currentStudent = 0;
+
+function switchStudent() {
+  currentStudent = parseInt(document.getElementById('studentSelect').value);
+  updateStudentData();
+  showToast('👤 Switched to ' + students[currentStudent].name);
+}
+
+function updateStudentData() {
+  const s = students[currentStudent];
+  // Sidebar
+  document.getElementById('sidebarAvatar').textContent = s.initials;
+  document.getElementById('sidebarName').textContent = s.name.split(' ').slice(0,2).join(' ');
+  // Info card
+  document.getElementById('ic_name').textContent = s.id + ' : ' + s.name + ', BCA (DIGSY B)';
+  document.getElementById('ic_dob').textContent = s.dob;
+  document.getElementById('ic_mobile').textContent = s.mobile;
+  document.getElementById('ic_parents').textContent = s.parents;
+  document.getElementById('ic_attNums').innerHTML = 'Present : ' + s.present + ' &nbsp;|&nbsp; Absent : ' + s.absent + ' &nbsp;|&nbsp; Total Att : ' + s.total;
+  document.getElementById('ic_attPct').textContent = s.pct + '%';
+  document.getElementById('ic_avatar').textContent = s.initials;
+  document.getElementById('db_att').textContent = s.pct + '%';
+  // Parent form
+  document.getElementById('parentName').value = s.parentName;
+  // Attendance table
+  buildAttTable(s);
+  // Result
+  document.getElementById('res_grade').textContent = s.result.grade;
+  document.getElementById('res_total').textContent = s.result.total;
+  document.getElementById('res_sgpa').textContent = s.result.sgpa;
+  buildResultTable(s);
+}
+
+function buildAttTable(s) {
+  const tb = document.getElementById('attBody');
+  tb.innerHTML = '';
+  s.subjects.forEach(sub => {
+    const pct = sub.pct;
+    const color = pct >= 90 ? '#2ed573' : pct >= 75 ? '#ffa502' : '#ff4757';
+    const badgeClass = pct >= 90 ? 'badge-green' : pct >= 75 ? 'badge-orange' : 'badge-red';
+    tb.innerHTML += `<tr>
+      <td><span class="badge ${badgeClass}" style="font-size:10px;">${sub.name}</span></td>
+      <td style="font-weight:600;">${sub.present}</td>
+      <td style="font-weight:600;color:#ff4757;">${sub.absent}</td>
+      <td>${sub.total}</td>
+      <td>
+        <span style="font-weight:700;color:${color};">${pct.toFixed(2)}%</span>
+        <div class="pct-bar"><div class="pct-fill" style="width:${Math.min(pct,100)}%;background:${color};"></div></div>
+      </td>
+    </tr>`;
+  });
+}
+
+function buildResultTable(s) {
+  const tb = document.getElementById('resultBody');
+  tb.innerHTML = '';
+  s.resultSubjects.forEach(r => {
+    tb.innerHTML += `<tr><td>${r.sub}</td><td>${r.internal}</td><td>${r.external}</td><td><strong>${r.total}</strong></td><td><span class="badge badge-blue">${r.grade}</span></td></tr>`;
+  });
+}
+
+function showSection(id) {
+  document.querySelectorAll('.section-panel').forEach(p => p.classList.remove('active-section'));
+  const sec = document.getElementById('sec_' + id);
+  if(sec) sec.classList.add('active-section');
+  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+  event.currentTarget.classList.add('active');
+  sec && sec.scrollIntoView({behavior:'smooth', block:'start'});
+}
+
+function showToast(msg) {
+  const t = document.getElementById('toast');
+  t.textContent = msg;
+  t.classList.add('show');
+  setTimeout(() => t.classList.remove('show'), 2800);
+}
+
+function changeMonth(dir) {
+  showToast(dir > 0 ? '📅 May 2026' : '📅 March 2026');
+}
+
+// Init
+updateStudentData();
+</script>
+</body>
+</html>
