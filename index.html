@@ -269,7 +269,7 @@
   <div class="student-mini">
     <div class="avatar" id="sidebarAvatar">N</div>
     <div class="s-name" id="sidebarName">Nikhil Badal</div>
-    <div class="s-class">BCA (DIGSY B)</div>
+    <div class="s-class">BCA (DS)</div>
   </div>
   <div class="nav-section">
     <div class="nav-title">My Zone</div>
@@ -301,7 +301,7 @@
     <label>👤 Select Student:</label>
     <select id="studentSelect" onchange="switchStudent()">
       <option value="0">Nikhil Badal — BCA (DS)</option>
-      <option value="1">Mannat Sharma — BCA (DS)</option>
+      <option value="1">Mannat Rawat — BCA (DS)</option>
       <option value="2">Nikhil Krishna — BCA (DS)</option>
     </select>
     <button class="switch-btn" onclick="switchStudent()">Switch Student</button>
@@ -311,7 +311,7 @@
   <div class="info-card" id="infoCard">
     <div class="info-grid">
       <table>
-        <tr><td>🎓 Student Details:</td><td id="ic_name">240438 : NIKHIL BADAL, BCA (DIGSY B)</td></tr>
+        <tr><td>🎓 Student Details:</td><td id="ic_name">240438 : NIKHIL BADAL, BCA (DS)</td></tr>
         <tr><td>📅 Academic Year:</td><td>2025-2026</td></tr>
         <tr><td>🎂 Date Of Birth:</td><td id="ic_dob">30/03/2005</td></tr>
         <tr><td>📱 Mobile No.:</td><td id="ic_mobile">9891561480</td></tr>
@@ -447,22 +447,22 @@
       <div class="assignment-card">
         <div class="ac-header"><div class="ac-title">Database Design Project</div><span class="badge badge-orange">Due Soon</span></div>
         <div class="ac-sub">Database Management System (BCG-202-V)</div>
-        <div class="ac-desc">Design a complete ER diagram and normalized relational schema for a Hospital Management System. Include all entities, relationships, and at least 3NF normalization. Submit as PDF.</div>
-        <div class="ac-meta"><span>📅 Due: 5 May 2026</span><span>📎 Max Marks: 20</span><span>👨‍🏫 Prof. Sharma</span></div>
+        <div class="ac-desc">Design a complete ER diagram. Include all entities, relationships, and at least 3NF normalization. Submit as PDF.</div>
+        <div class="ac-meta"><span>📅 Due: 5 May 2026</span><span>📎 Max Marks: 20</span><span>👨‍🏫 Prof. Neelam Tewatia</span></div>
         <div style="margin-top:10px;"><button class="upload-btn" onclick="showToast('📤 Upload window opened!')">📤 Upload Submission</button></div>
       </div>
       <div class="assignment-card">
         <div class="ac-header"><div class="ac-title">Python Flask Web App</div><span class="badge badge-blue">Submitted</span></div>
         <div class="ac-sub">Python Programming (BCG-206-V)</div>
         <div class="ac-desc">Build a simple Flask web application with user login, registration and dashboard. Use SQLite as the database. Deploy locally and submit source code as ZIP.</div>
-        <div class="ac-meta"><span>📅 Due: 22 Apr 2026</span><span>📎 Max Marks: 30</span><span>👨‍🏫 Prof. Meena</span></div>
+        <div class="ac-meta"><span>📅 Due: 22 Apr 2026</span><span>📎 Max Marks: 30</span><span>👨‍🏫 Prof. Mahima Tewatia</span></div>
         <div style="margin-top:10px;font-size:12px;color:#2ed573;font-weight:600;">✅ Submitted on 21 Apr 2026 — Awaiting Grade</div>
       </div>
       <div class="assignment-card">
         <div class="ac-header"><div class="ac-title">Probability Report</div><span class="badge badge-red">Pending</span></div>
         <div class="ac-sub">Probability and Statistics (BCG-202-V)</div>
         <div class="ac-desc">Write a 2000-word report on real-world applications of Bayes' theorem. Include at least 5 examples and statistical calculations. Submit in DOCX format.</div>
-        <div class="ac-meta"><span>📅 Due: 2 May 2026</span><span>📎 Max Marks: 15</span><span>👨‍🏫 Prof. Joshi</span></div>
+        <div class="ac-meta"><span>📅 Due: 2 May 2026</span><span>📎 Max Marks: 15</span><span>👨‍🏫 Prof. Ajeet</span></div>
         <div style="margin-top:10px;"><button class="upload-btn" onclick="showToast('📤 Upload window opened!')">📤 Upload Submission</button></div>
       </div>
     </div>
@@ -598,12 +598,12 @@
   <div class="section-panel" id="sec_myteacher">
     <div class="panel-header"><span class="ph-icon">👨‍🏫</span> My Teachers</div>
     <div class="panel-body">
-      <div class="teacher-card"><div class="tc-avatar">RS</div><div class="tc-info"><div class="tc-name">Prof. Rajesh Sharma</div><div class="tc-sub">Database Management System (BCG-202-V)</div><div class="tc-contact">📧 r.sharma@acem.edu.in | 📱 9811XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Sharma')">💬 Message</button></div>
-      <div class="teacher-card"><div class="tc-avatar">PM</div><div class="tc-info"><div class="tc-name">Prof. Priya Meena</div><div class="tc-sub">Python Programming (BCG-206-V)</div><div class="tc-contact">📧 p.meena@acem.edu.in | 📱 9910XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Meena')">💬 Message</button></div>
-      <div class="teacher-card"><div class="tc-avatar">AJ</div><div class="tc-info"><div class="tc-name">Prof. Arun Joshi</div><div class="tc-sub">Probability & Statistics (BCG-202-V)</div><div class="tc-contact">📧 a.joshi@acem.edu.in | 📱 9988XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Joshi')">💬 Message</button></div>
-      <div class="teacher-card"><div class="tc-avatar">SK</div><div class="tc-info"><div class="tc-name">Prof. Sunita Kumar</div><div class="tc-sub">Design of Unix OS (BCG-204-V, BCG-212-V)</div><div class="tc-contact">📧 s.kumar@acem.edu.in | 📱 9871XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Kumar')">💬 Message</button></div>
-      <div class="teacher-card"><div class="tc-avatar">VG</div><div class="tc-info"><div class="tc-name">Prof. Vijay Gupta</div><div class="tc-sub">Wireless Communications (BCG-216-V)</div><div class="tc-contact">📧 v.gupta@acem.edu.in | 📱 9845XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Gupta')">💬 Message</button></div>
-      <div class="teacher-card"><div class="tc-avatar">MK</div><div class="tc-info"><div class="tc-name">Prof. Mohan Kapoor</div><div class="tc-sub">Data Science using R (BCG-204-V)</div><div class="tc-contact">📧 m.kapoor@acem.edu.in | 📱 9765XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Kapoor')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">NT</div><div class="tc-info"><div class="tc-name">Prof. Neelam tewatia</div><div class="tc-sub">Database Management System (BCG-202-V)</div><div class="tc-contact">📧 Neelam.tewatia@acem.edu.in | 📱 9811XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Neelam tewatia')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">MT</div><div class="tc-info"><div class="tc-name">Prof. Mahima Tewatia</div><div class="tc-sub">Python Programming (BCG-206-V)</div><div class="tc-contact">📧 Mahima.Tewatia@acem.edu.in | 📱 9910XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Mahima Tewatia')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">A</div><div class="tc-info"><div class="tc-name">Prof. Ajeet</div><div class="tc-sub">Probability & Statistics (BCG-202-V)</div><div class="tc-contact">📧 Ajeet@acem.edu.in | 📱 9988XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Ajeet')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">JS</div><div class="tc-info"><div class="tc-name">Prof. Jyoti Sharma</div><div class="tc-sub">Design of Unix OS (BCG-204-V, BCG-212-V)</div><div class="tc-contact">📧 Jyoti.Sharma@acem.edu.in | 📱 9871XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Jyoti Sharma')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">R</div><div class="tc-info"><div class="tc-name">Prof. Ranjeet</div><div class="tc-sub">Wireless Communications (BCG-216-V)</div><div class="tc-contact">📧 Ranjeet@acem.edu.in | 📱 9845XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Ranjeet')">💬 Message</button></div>
+      <div class="teacher-card"><div class="tc-avatar">JS</div><div class="tc-info"><div class="tc-name">Prof. Jyoti Sharma</div><div class="tc-sub">Data Science using R (BCG-204-V)</div><div class="tc-contact">📧 Jyoti.Sharma@acem.edu.in | 📱 9765XXXXXX</div></div><button class="msg-btn" onclick="showToast('💬 Opening message for Prof. Jyoti Sharma')">💬 Message</button></div>
     </div>
   </div>
 
@@ -755,7 +755,7 @@
 // =========== STUDENT DATA ===========
 const students = [
   {
-    id: "240438", name: "NIKHIL BADAL", initials: "N", class: "BCA (DIGSY B)",
+    id: "240438", name: "NIKHIL BADAL", initials: "N", class: "BCA (DS)",
     dob: "30/03/2005", mobile: "9891561480", parents: "SIDDH NARAYAN BADAL, SAROJ BADAL",
     present: 194, absent: 34, total: 228, pct: "85.09",
     parentName: "SIDDH NARAYAN BADAL",
@@ -788,10 +788,10 @@ const students = [
     ]
   },
   {
-    id: "240452", name: "MANNAT SHARMA", initials: "M", class: "BCA (DIGSY B)",
-    dob: "15/07/2005", mobile: "9812XXXXXX", parents: "VIKRAM SHARMA, SUNITA SHARMA",
+    id: "240452", name: "MANNAT RAWAT", initials: "M", class: "BCA (DS)",
+    dob: "15/07/2005", mobile: "9812XXXXXX", parents: "VIKRAM RAWAT, SUNITA RAWAT",
     present: 205, absent: 23, total: 228, pct: "89.91",
-    parentName: "VIKRAM SHARMA",
+    parentName: "VIKRAM RAWAT",
     result: { grade: "A", sgpa: "8.4", total: "578 / 700" },
     subjects: [
       {name:"Mentoring (MM01)",present:7,absent:1,total:8,pct:87.50},
@@ -821,10 +821,10 @@ const students = [
     ]
   },
   {
-    id: "240467", name: "NIKHIL KRISHNA", initials: "NK", class: "BCA (DIGSY B)",
-    dob: "02/11/2004", mobile: "9765XXXXXX", parents: "KRISHNA MURARI, GEETA DEVI",
+    id: "240467", name: "NIKHIL KRISHNA", initials: "NK", class: "BCA (DS)",
+    dob: "02/11/2004", mobile: "9667723461", parents: "GOPA KUMAR , GEETA KUMAR",
     present: 178, absent: 50, total: 228, pct: "78.07",
-    parentName: "KRISHNA MURARI",
+    parentName: "GOPA KUMAR",
     result: { grade: "B", sgpa: "7.2", total: "465 / 700" },
     subjects: [
       {name:"Mentoring (MM01)",present:6,absent:2,total:8,pct:75.00},
